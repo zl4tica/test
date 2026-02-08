@@ -8,40 +8,48 @@ import {
   type RegisterCredentials,
 } from "@/lib/types";
 
-// REGISTER
-export const register = async (credentials: RegisterCredentials) => {
-  const parsedCredentials = RegisterSchema.parse(credentials);
-  const response = await apiClient.post<AuthResponse>(
-    "/register",
-    parsedCredentials,
-  );
-  const parsedResponse = AuthResponseSchema.parse(response.data);
-  if ("client" in parsedResponse.data && parsedResponse.data.token) {
-    localStorage.setItem("auth_token", parsedResponse.data.token.token);
-  }
-  return response;
-};
+export const authService = {
+  // REGISTER
+  register: async (credentials: RegisterCredentials) => {
+    const parsedCredentials = RegisterSchema.parse(credentials);
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/register",
+      parsedCredentials,
+    );
+    // The response data structure from backend is { message: "...", data: { client: ..., token: ... } }
+    // We should parse it if needed, but for now just return response
+    return response;
+  },
 
-// LOGIN
-export const login = async (credentials: LoginCredentials) => {
-  const parsedCredentials = LoginSchema.parse(credentials);
-  const response = await apiClient.post<AuthResponse>(
-    "/login",
-    parsedCredentials,
-  );
-  const parsedResponse = AuthResponseSchema.parse(response.data);
-  if (!("client" in parsedResponse.data) && parsedResponse.data.token) {
-    localStorage.setItem("auth_token", parsedResponse.data.token);
-  }
-  return response;
-};
+  // LOGIN
+  login: async (credentials: LoginCredentials) => {
+    const parsedCredentials = LoginSchema.parse(credentials);
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/login",
+      parsedCredentials,
+    );
+    return response;
+  },
 
-// LOGOUT
-export const logout = async () => {
-  const response = await apiClient.post<AuthResponse>("/logout");
-  if (response.message === "تم تسجيل الخروج بنجاح") {
+  // GOOGLE LOGIN
+  googleLogin: async (idToken: string) => {
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/google-login",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+    );
+    return response;
+  },
+
+  // LOGOUT
+  logout: async () => {
+    const response = await apiClient.post<AuthResponse>("/auth/logout");
     localStorage.removeItem("auth_token");
+    localStorage.removeItem("user_data");
     return response;
   }
-  return response.message;
 };

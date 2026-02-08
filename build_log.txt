@@ -1,0 +1,6 @@
+
+> elma_web@0.0.0 build
+> tsc -b && vite build
+
+src/components/layout/header_mobile.tsx(2,1): error TS6133: 'ModeToggle' is declared but its value is never read.
+src/components/layout/header_mobile.tsx(3,1): error TS6133: 'AuthButton' is declared but its value is never read.

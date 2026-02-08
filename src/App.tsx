@@ -11,11 +11,13 @@ import About from "./pages/about";
 import ProtectedRoute from "./components/guard/protected_route";
 import AuthRoute from "./components/guard/auth_route";
 import Home from "./pages/home";
+import WaterDetail from "./pages/water_detail";
 
 export default function App() {
   const publicRoute = [
     { path: "*", element: <NotFound /> },
     { path: "/", element: <Home /> },
+    { path: "/water/:id", element: <WaterDetail /> },
     { path: "/post", element: <Post /> },
     { path: "/blog", element: <Blog /> },
     { path: "/compare", element: <Compare /> },

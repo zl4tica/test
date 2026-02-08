@@ -1,3 +1,9 @@
+import AdsCard from "./ads_card";
+
 export default function Hero() {
-  return <div>hero_section</div>;
+  return (
+    <section className="w-full flex justify-center py-8">
+      <AdsCard />
+    </section>
+  );
 }

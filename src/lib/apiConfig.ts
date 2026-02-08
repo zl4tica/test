@@ -1,6 +1,7 @@
 import { getDeviceFingerprint } from "./fingerprintProvider";
 
-const API_URL = import.meta.env.VITE_API_URL as string;
+export const API_URL = import.meta.env.VITE_API_URL as string;
+export const STORAGE_URL = import.meta.env.VITE_STORAGE_URL as string;
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem("auth_token");
@@ -36,13 +37,18 @@ export const apiClient = {
     return response.json() as Promise<T>;
   },
 
-  async post<T>(endpoint: string, data: unknown = {}): Promise<T> {
+  async post<T>(endpoint: string, data: unknown = {}, options?: { headers?: Record<string, string> }): Promise<T> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      ...options?.headers,
     };
 
     const token = getAuthToken();
     if (token) headers["Authorization"] = `Bearer ${token}`;
+    // Override Authorization if provided in options
+    if (options?.headers?.Authorization) {
+      headers["Authorization"] = options.headers.Authorization;
+    }
 
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: "POST",
