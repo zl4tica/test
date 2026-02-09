@@ -50,12 +50,9 @@ export const waterService = {
     },
 
     compareBrands: async (brandAId: number, brandBId: number): Promise<any> => {
-        // Intentionally returning any for now until we define ComparisonResult type accurately
-        // Middleware 'guest.compare.limit' might return 401/429 or a specific message
-        // We will handle errors in the component/service consumer
         return await apiClient.get("/water_compare", {
-            brand_a: brandAId, // Adjust params based on actual API expectations if needed
-            brand_b: brandBId
+            // @ts-ignore
+            water_ids: [brandAId, brandBId]
         });
     }
 };

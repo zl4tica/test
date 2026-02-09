@@ -186,7 +186,11 @@ export default function Compare() {
         {/* Results */}
         {brandA && brandB && hasCompared && (
           <div className="animate-in fade-in slide-in-from-bottom-10 duration-500">
-            <ComparisonResults brandA={brandA} brandB={brandB} />
+            <ComparisonResults
+              brandA={brandA}
+              brandB={brandB}
+              onRequireLogin={() => setShowLoginPrompt(true)}
+            />
           </div>
         )}
 

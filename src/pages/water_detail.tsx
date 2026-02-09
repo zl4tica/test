@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { waterService } from "@/services/waterService";
 import { reviewService } from "@/services/reviewService";
 import { type WaterBrand, type Review } from "@/lib/api_types";
@@ -23,8 +23,10 @@ export default function WaterDetail() {
     const [comment, setComment] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
+        setIsAuthenticated(localStorage.getItem("auth_token") !== null);
         const fetchData = async () => {
             if (!id) return;
             setLoading(true);
@@ -51,33 +53,38 @@ export default function WaterDetail() {
     const handleReviewSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Check authentication
-        const isAuthenticated = localStorage.getItem("auth_token") !== null;
         if (!isAuthenticated) {
             setShowLoginPrompt(true);
             return;
         }
 
         if (rating === 0) {
-            toast.error("يرجى اختيار تقييم");
+            toast.error("خطأ في التقييم", {
+                description: "يرجى اختيار عدد النجوم للتقييم"
+            });
             return;
         }
         if (!comment.trim()) {
-            toast.error("يرجى كتابة تعليق");
+            toast.error("خطأ في التقييم", {
+                description: "يرجى كتابة تعليقك قبل الإرسال"
+            });
             return;
         }
 
         setSubmitting(true);
         try {
             await reviewService.addReview(Number(id), rating, comment);
-            toast.success("تم إضافة تقييمك بنجاح");
+            toast.success("شكراً لتقييمك", {
+                description: "تم إضافة تقييمك بنجاح وسيكون متاحاً للآخرين"
+            });
             setComment("");
             setRating(0);
-            // Refresh reviews
             const reviewsData = await reviewService.getReviewsByWaterId(Number(id));
             setReviews(reviewsData);
         } catch (error) {
-            toast.error("حدث خطأ أثناء إضافة التقييم");
+            toast.error("فشل إضافة التقييم", {
+                description: "حدث خطأ أثناء محاولة حفظ تقييمك"
+            });
         } finally {
             setSubmitting(false);
         }
@@ -101,9 +108,22 @@ export default function WaterDetail() {
 
     if (!brand) return <div className="text-center py-20">العلامة التجارية غير موجودة</div>;
 
+    const properties = [
+        { key: "chlorure", label: "الكلورور", value: brand.chemistry?.chlorure, default: 81 },
+        { key: "nitrates", label: "النترات", value: brand.chemistry?.nitrates, default: 15 },
+        { key: "nitrites", label: "النيترييت", value: brand.chemistry?.nitrites, default: 0 },
+        { key: "residues", label: "البقايا عند 180°", value: brand.chemistry?.residues, default: 478 },
+        { key: "ph", label: "PH 0", value: brand.chemistry?.ph, default: 7.5 },
+        { key: "calcium", label: "الكالسيوم", value: brand.chemistry?.calcium, default: 68 },
+        { key: "magnesium", label: "المغنيسيوم", value: brand.chemistry?.magnesium, default: 50 },
+        { key: "potassium", label: "البوتاسيوم", value: brand.chemistry?.potassium, default: 2 },
+        { key: "sodium", label: "الصوديوم", value: brand.chemistry?.sodium, default: 58 },
+        { key: "bicarbonate", label: "البيكربونات", value: brand.chemistry?.bicarbonate, default: 376 },
+        { key: "sulphate", label: "الكبريتات", value: brand.chemistry?.sulphate, default: 65 }
+    ];
+
     return (
         <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-20">
-            {/* Top Ad */}
             {ads.length > 0 && (
                 <div className="pt-8">
                     <AdsCard ad={ads[0]} />
@@ -116,7 +136,6 @@ export default function WaterDetail() {
                 </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                    {/* Left Column: Info */}
                     <div className="space-y-6">
                         <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
                             <h2 className="text-2xl font-bold mb-6 dark:text-white text-right font-noto">
@@ -149,33 +168,23 @@ export default function WaterDetail() {
                                 </p>
                             </div>
 
-                            <Button
-                                onClick={handleCompare}
-                                className="w-full mt-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl h-12 text-lg"
-                            >
+                            <Button onClick={handleCompare} className="w-full mt-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl h-12 text-lg">
                                 قارن
                             </Button>
                         </div>
 
-                        {/* Dynamic Ad instead of placeholder */}
-                        {ads.length > 0 && (
+                        {ads.length > 3 && (
                             <div className="mt-6">
-                                <AdsCard ad={ads[3] || ads[0]} />
+                                <AdsCard ad={ads[3]} />
                             </div>
                         )}
                     </div>
 
-                    {/* Right Column: Image */}
                     <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center min-h-[400px]">
-                        <img
-                            src={`${STORAGE_URL}/${brand.image}`}
-                            alt={brand.brand_name}
-                            className="max-h-96 w-auto object-contain drop-shadow-xl"
-                        />
+                        <img src={`${STORAGE_URL}/${brand.image}`} alt={brand.brand_name} className="max-h-96 w-auto object-contain drop-shadow-xl" />
                     </div>
                 </div>
 
-                {/* Composition Table */}
                 <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-12">
                     <table className="w-full text-right">
                         <thead className="bg-gray-50 dark:bg-gray-900/50">
@@ -185,21 +194,22 @@ export default function WaterDetail() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                            {[
-                                { label: "الكلوريد", value: brand.chemistry?.chlorure, default: 81 },
-                                { label: "النترات", value: brand.chemistry?.nitrates, default: 15 },
-                                { label: "النيتريت", value: brand.chemistry?.nitrites, default: 0 },
-                                { label: "البقايا عند 180°", value: brand.chemistry?.residues, default: 478 },
-                                { label: "PH", value: brand.chemistry?.ph, default: 7.5 },
-                                { label: "الكالسيوم", value: brand.chemistry?.calcium, default: 68 },
-                                { label: "المغنيسيوم", value: brand.chemistry?.magnesium, default: 50 },
-                                { label: "البوتاسيوم", value: brand.chemistry?.potassium, default: 2 },
-                                { label: "الصوديوم", value: brand.chemistry?.sodium, default: 58 },
-                                { label: "البيكربونات", value: brand.chemistry?.bicarbonate, default: 376 },
-                                { label: "الكبريتات", value: brand.chemistry?.sulphate, default: 65 }
-                            ].map((item, idx) => (
-                                <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors">
-                                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{item.label}</td>
+                            {properties.map((item) => (
+                                <tr key={item.key} className="hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors">
+                                    <td className="px-6 py-4">
+                                        <Link
+                                            to={`/ranking/${item.key}`}
+                                            onClick={(e) => {
+                                                if (!isAuthenticated) {
+                                                    e.preventDefault();
+                                                    setShowLoginPrompt(true);
+                                                }
+                                            }}
+                                            className="text-blue-600 dark:text-blue-400 hover:underline inline-block"
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </td>
                                     <td className="px-6 py-4 text-gray-800 dark:text-white font-medium">{item.value ?? item.default}</td>
                                 </tr>
                             ))}
@@ -207,24 +217,17 @@ export default function WaterDetail() {
                     </table>
                 </div>
 
-                {/* Middle Ad */}
                 {ads.length > 1 && (
                     <div className="mb-12">
                         <AdsCard ad={ads[1]} />
                     </div>
                 )}
 
-                {/* Reviews Section */}
                 <div className="mb-12">
                     <div className="flex items-center justify-between mb-8 flex-row-reverse">
                         <h2 className="text-2xl font-bold dark:text-white">التقييمات</h2>
                         <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="rounded-full bg-blue-500 text-white border-none px-4">الكل (1)</Button>
-                            {[5, 4, 3, 2, 1].map(num => (
-                                <Button key={num} variant="outline" size="sm" className="rounded-full gap-1 dark:text-white">
-                                    <span>({num === 5 ? 0 : num === 4 ? 1 : 0})</span> {num} <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                </Button>
-                            ))}
+                            <Button variant="outline" size="sm" className="rounded-full bg-blue-500 text-white border-none px-4">الكل ({reviews.length})</Button>
                         </div>
                     </div>
 
@@ -247,9 +250,7 @@ export default function WaterDetail() {
                                     </div>
                                     <span className="text-gray-400 text-sm">{review.date.short}</span>
                                 </div>
-                                <p className="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
-                                    {review.content}
-                                </p>
+                                <p className="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">{review.content}</p>
                             </div>
                         )) : (
                             <p className="text-center text-gray-500 py-12">لا توجد تقييمات بعد</p>
@@ -257,24 +258,18 @@ export default function WaterDetail() {
                     </div>
                 </div>
 
-                {/* Add Review Form */}
                 <div className="bg-blue-50 dark:bg-blue-950/20 p-8 rounded-3xl border border-blue-100 dark:border-blue-900/50">
                     <h3 className="text-xl font-bold mb-6 text-right dark:text-white">أضف تقييمك</h3>
                     <div className="flex items-center justify-end gap-2 mb-6">
                         <span className="text-gray-500 dark:text-gray-400 font-medium">التقييم:</span>
                         <div className="flex gap-1">
                             {[1, 2, 3, 4, 5].map(num => (
-                                <button
-                                    key={num}
-                                    onClick={() => setRating(num)}
-                                    className="hover:scale-110 transition-transform"
-                                >
+                                <button key={num} onClick={() => setRating(num)} className="hover:scale-110 transition-transform">
                                     <Star className={`w-8 h-8 ${num <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
                                 </button>
                             ))}
                         </div>
                     </div>
-
                     <form onSubmit={handleReviewSubmit}>
                         <textarea
                             value={comment}
@@ -283,18 +278,13 @@ export default function WaterDetail() {
                             className="w-full bg-white dark:bg-gray-800 rounded-2xl p-6 text-right min-h-[150px] border border-blue-100 dark:border-blue-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:text-white"
                         />
                         <div className="mt-6 flex justify-start">
-                            <Button
-                                type="submit"
-                                disabled={submitting}
-                                className="bg-blue-500 hover:bg-blue-600 text-white px-8 h-12 rounded-xl flex items-center gap-2"
-                            >
+                            <Button type="submit" disabled={submitting} className="bg-blue-500 hover:bg-blue-600 text-white px-8 h-12 rounded-xl flex items-center gap-2">
                                 إرسال <Send className="w-4 h-4" />
                             </Button>
                         </div>
                     </form>
                 </div>
 
-                {/* Bottom Ad */}
                 {ads.length > 2 && (
                     <div className="mt-12">
                         <AdsCard ad={ads[2]} />
@@ -302,10 +292,8 @@ export default function WaterDetail() {
                 )}
             </div>
 
-            <LoginPromptModal
-                isOpen={showLoginPrompt}
-                onClose={() => setShowLoginPrompt(false)}
-            />
+            <LoginPromptModal isOpen={showLoginPrompt} onClose={() => setShowLoginPrompt(false)} />
         </div>
     );
 }
+

@@ -13,7 +13,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <Toaster position="top-right" richColors closeButton expand={true} />
+      <Toaster position="top-right" richColors closeButton expand={true} dir="rtl" />
     </div>
   );
 }

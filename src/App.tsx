@@ -12,18 +12,23 @@ import ProtectedRoute from "./components/guard/protected_route";
 import AuthRoute from "./components/guard/auth_route";
 import Home from "./pages/home";
 import WaterDetail from "./pages/water_detail";
+import Ranking from "./pages/ranking";
 
 export default function App() {
   const publicRoute = [
     { path: "*", element: <NotFound /> },
     { path: "/", element: <Home /> },
     { path: "/water/:id", element: <WaterDetail /> },
-    { path: "/post", element: <Post /> },
+    { path: "/post/:id", element: <Post /> },
+    { path: "/blog/:id", element: <Post /> },
     { path: "/blog", element: <Blog /> },
     { path: "/compare", element: <Compare /> },
     { path: "/about", element: <About /> },
   ];
-  const privateRoute = [{ path: "/profile", element: <Profile /> }];
+  const privateRoute = [
+    { path: "/profile", element: <Profile /> },
+    { path: "/ranking/:component", element: <Ranking /> },
+  ];
   const authRoute = [
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },

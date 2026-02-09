@@ -41,9 +41,12 @@ export interface WaterBrand {
 export interface Post {
   id: number;
   title: string;
-  content: string;
+  content: string; // Keep as content in frontend for consistency, but backend returns 'content' which is mapped from 'description'
   image?: string;
-  created_at: string;
+  date: {
+    long: string;
+    short: string;
+  };
 }
 
 export interface Review {

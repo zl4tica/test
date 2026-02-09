@@ -1,13 +1,20 @@
 import { type WaterBrand } from "@/lib/api_types";
-
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 interface ComparisonResultsProps {
     brandA: WaterBrand;
     brandB: WaterBrand;
-    comparisonData?: any; // If the API returns specific comparison logic/diff, otherwise we just compare locally
+    comparisonData?: any;
+    onRequireLogin?: () => void;
 }
 
-export default function ComparisonResults({ brandA, brandB }: ComparisonResultsProps) {
+export default function ComparisonResults({ brandA, brandB, onRequireLogin }: ComparisonResultsProps) {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        setIsAuthenticated(localStorage.getItem("auth_token") !== null);
+    }, []);
 
     // Helper to format values
     const formatValue = (val: number | undefined) => val ? val.toFixed(1) : "-";
@@ -26,18 +33,15 @@ export default function ComparisonResults({ brandA, brandB }: ComparisonResultsP
         { key: "residues", label: "البقايا عند 180°", unit: "مجم/لتر" },
     ];
 
+    const handleLinkClick = (e: React.MouseEvent) => {
+        if (!isAuthenticated) {
+            e.preventDefault();
+            onRequireLogin?.();
+        }
+    };
+
     return (
         <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-            {/* Header Images - Removed per request */}
-            {/* <div className="grid grid-cols-2 border-b border-gray-100 dark:border-gray-800">
-                <div className="p-8 flex flex-col items-center border-l dark:border-gray-800">
-                     ...
-                </div>
-                <div className="p-8 flex flex-col items-center">
-                    ...
-                </div>
-            </div> */}
-
             {/* Table Header */}
             <div className="grid grid-cols-3 bg-gray-50 dark:bg-slate-950 py-3 px-4 font-medium text-gray-500 dark:text-gray-400 text-sm">
                 <div className="text-center">{brandA.brand_name}</div>
@@ -59,8 +63,13 @@ export default function ComparisonResults({ brandA, brandB }: ComparisonResultsP
                                 {formatValue(valA)}
                             </div>
                             <div className="text-center text-gray-500 dark:text-gray-400 text-sm flex flex-col items-center justify-center">
-                                <span>{prop.label}</span>
-                                {/* <span className="text-xs opacity-50">{prop.unit}</span> */}
+                                <Link
+                                    to={`/ranking/${prop.key}`}
+                                    onClick={handleLinkClick}
+                                    className="text-blue-600 dark:text-blue-400 hover:underline hover:scale-105 transition-all"
+                                >
+                                    {prop.label}
+                                </Link>
                             </div>
                             <div className="text-center font-semibold text-gray-800 dark:text-gray-200">
                                 {formatValue(valB)}

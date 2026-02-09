@@ -5,7 +5,7 @@ export default function HeaderMobile() {
   const navLinks = [
     { label: "الرئيسية", href: "/" },
     { label: "قارن الآن", href: "/compare" },
-    { label: "حول المنصة", href: "/info" },
+    { label: "حول المنصة", href: "/about" },
     { label: "المدونة", href: "/blog" },
   ];
 

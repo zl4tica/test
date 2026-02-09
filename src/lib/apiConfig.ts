@@ -8,15 +8,20 @@ const getAuthToken = (): string | null => {
 };
 
 interface RequestParams {
-  [key: string]: string | number | boolean;
+  [key: string]: string | number | boolean | string[] | number[];
 }
 
 export const apiClient = {
   async get<T>(endpoint: string, params: RequestParams = {}): Promise<T> {
     const url = new URL(`${API_URL}${endpoint}`);
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, String(params[key])),
-    );
+    Object.keys(params).forEach((key) => {
+      const value = params[key];
+      if (Array.isArray(value)) {
+        value.forEach((v) => url.searchParams.append(`${key}[]`, String(v)));
+      } else {
+        url.searchParams.append(key, String(value));
+      }
+    });
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",

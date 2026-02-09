@@ -41,7 +41,9 @@ export default function Profile() {
         setLastName(userData.last_name || "");
       } catch (error: any) {
         console.error("Failed to fetch profile:", error);
-        toast.error("فشل تحميل بيانات الملف الشخصي");
+        toast.error("فشل التحميل", {
+          description: "فشل تحميل بيانات الملف الشخصي"
+        });
       } finally {
         setProfileLoading(false);
       }
@@ -64,10 +66,14 @@ export default function Profile() {
       const userData = response.data;
       localStorage.setItem("user_data", JSON.stringify(userData));
 
-      toast.success("تم تحديث الملف الشخصي بنجاح");
+      toast.success("تحديث الملف الشخصي", {
+        description: "تم تحديث بياناتك الشخصية بنجاح"
+      });
     } catch (error: any) {
       console.error("Profile update error:", error);
-      toast.error(error.response?.data?.message || "فشل تحديث الملف الشخصي");
+      toast.error("فشل التحديث", {
+        description: error.response?.data?.message || "فشل تحديث الملف الشخصي"
+      });
     } finally {
       setLoading(false);
     }
@@ -77,12 +83,16 @@ export default function Profile() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error("كلمة المرور الجديدة غير متطابقة");
+      toast.error("خطأ في التحقق", {
+        description: "كلمة المرور الجديدة غير متطابقة"
+      });
       return;
     }
 
     if (newPassword.length < 8) {
-      toast.error("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+      toast.error("خطأ في التحقق", {
+        description: "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+      });
       return;
     }
 
@@ -95,13 +105,17 @@ export default function Profile() {
         password_confirmation: confirmPassword,
       });
 
-      toast.success("تم تحديث كلمة المرور بنجاح");
+      toast.success("تغيير كلمة المرور", {
+        description: "تم تحديث كلمة المرور الخاصة بك بنجاح"
+      });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error: any) {
       console.error("Password update error:", error);
-      toast.error(error.response?.data?.message || "فشل تحديث كلمة المرور");
+      toast.error("فشل تحديث كلمة المرور", {
+        description: error.response?.data?.message || "حدث خطأ أثناء محاولة تحديث كلمة المرور"
+      });
     } finally {
       setLoading(false);
     }

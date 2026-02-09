@@ -24,7 +24,9 @@ export default function Register() {
   const handleEmailRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== passwordConfirmation) {
-      toast.error("كلمة المرور غير متطابقة");
+      toast.error("خطأ في التحقق", {
+        description: "كلمتا المرور غير متطابقتين"
+      });
       return;
     }
 
@@ -54,10 +56,15 @@ export default function Register() {
         localStorage.setItem("user_data", JSON.stringify(clientData));
       }
 
-      toast.success("تم إنشاء الحساب بنجاح");
-      navigate("/profile");
+      toast.success("تم إنشاء الحساب", {
+        description: response.message || "أهلاً بك في ALMAA! تم إنشاء حسابك بنجاح",
+        duration: 3000
+      });
+      setTimeout(() => navigate("/compare"), 1500);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "فشل إنشاء الحساب");
+      toast.error("فشل إنشاء الحساب", {
+        description: error.response?.data?.message || "حدث خطأ أثناء محاولة إنشاء الحساب"
+      });
     } finally {
       setLoading(false);
     }
@@ -171,18 +178,24 @@ export default function Register() {
                     if (clientData) {
                       localStorage.setItem("user_data", JSON.stringify(clientData));
                     }
-                    toast.success("تم تسجيل الدخول بواسطة جوجل بنجاح");
+                    toast.success("تم تسجيل الدخول", {
+                      description: "تم تسجيل الدخول بواسطة جوجل بنجاح"
+                    });
                     navigate("/profile");
                   } catch (error: any) {
                     console.error("Google Login Backend Error", error);
-                    toast.error(error.response?.data?.message || "فشل تسجيل الدخول بواسطة جوجل");
+                    toast.error("فشل تسجيل الدخول", {
+                      description: error.response?.data?.message || "فشل تسجيل الدخول بواسطة جوجل"
+                    });
                   } finally {
                     setLoading(false);
                   }
                 }
               }}
               onError={() => {
-                toast.error("فشل تسجيل الدخول بواسطة جوجل");
+                toast.error("فشل تسجيل الدخول", {
+                  description: "حدث خطأ أثناء الاتصال بحساب جوجل"
+                });
                 setLoading(false);
               }}
               useOneTap
