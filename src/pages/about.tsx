@@ -1,4 +1,5 @@
 import { Shield, Target, Users, Globe, BookOpen, MessageSquare, Mail, Phone, MapPin } from "lucide-react";
+import { SEO } from "@/components/layout/seo";
 import Logo from "@/components/layout/logo";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -16,8 +17,13 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-      {/* Hero Section */}
+    <div className="bg-gray-50 dark:bg-slate-950 min-h-screen" dir="rtl">
+      <SEO
+        title="من نحن | ALMAA"
+        description="تعرف على رؤية ALMAA في توفير المعلومات الشفافة حول مياه الشرب. مهمتنا هي مساعدتك في اختيار المياه الأفضل لصحتك."
+        keywords="عن ALMAA, من نحن, رؤية المشروع, مياه شرب"
+      />
+      {/* 1. Header Hero Section */}
       <section className="relative py-24 overflow-hidden bg-blue-600">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">

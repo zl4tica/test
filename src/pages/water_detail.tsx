@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Star, Send } from "lucide-react";
 import AdsCard from "@/components/ads_card";
+import { SEO } from "@/components/layout/seo";
 import { adsService } from "@/services/adsService";
 import { toast } from "sonner";
 import LoginPromptModal from "@/components/login_prompt_modal";
@@ -124,6 +125,11 @@ export default function WaterDetail() {
 
     return (
         <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-20">
+            <SEO
+                title={`${brand.brand_name} | تفاصيل الجودة والتحليل الكيميائي`}
+                description={`تعرف على التفاصيل الكاملة لمياه ${brand.brand_name}. التحليل الكيميائي، المكونات، والتقييمات من المستخدمين.`}
+                keywords={`${brand.brand_name}, مياه معدنية, تحليل مياه, تقييم مياه, ALMAA`}
+            />
             {ads.length > 0 && (
                 <div className="pt-8">
                     <AdsCard ad={ads[0]} />

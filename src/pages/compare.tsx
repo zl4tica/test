@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { type WaterBrand, type Advertisement } from "@/lib/api_types";
+import { SEO } from "@/components/layout/seo";
 import { waterService } from "@/services/waterService";
 import { adsService } from "@/services/adsService";
 import BrandSelectionModal from "@/components/brand_selection_modal";
@@ -112,6 +113,11 @@ export default function Compare() {
 
   return (
     <div className="min-h-screen pb-20">
+      <SEO
+        title="مقارنة المياه | ALMAA"
+        description="قارن بين أنواع مختلفة من مياه الشرب بناءً على المكونات الكيميائية والتقييمات. اتخذ قراراً مستنيراً لصحتك."
+        keywords="مقارنة مياه, تحليل مياه, ALMAA, جودة المياه"
+      />
       {/* Top Ad */}
       {ads.length > 0 && <AdsCard ad={ads[0]} />}
 

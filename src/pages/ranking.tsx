@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { SEO } from "@/components/layout/seo";
 import { waterService } from "@/services/waterService";
 import { type WaterBrand } from "@/lib/api_types";
 import { STORAGE_URL } from "@/lib/apiConfig";
@@ -70,9 +71,13 @@ export default function Ranking() {
     }
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950 pb-20 transition-colors duration-300">
-            {/* Header */}
-            <div className="bg-blue-600 dark:bg-blue-950 pt-12 pb-20 transition-colors duration-300">
+        <div className="pb-12 bg-gray-50 dark:bg-slate-950 min-h-screen" dir="rtl">
+            <SEO
+                title={`ترتيب المياه حسب ${componentLabel} | ALMAA`}
+                description={`شاهد ترتيب ماركات المياه بناءً على نسبة ${componentLabel}. اكتشف المياه المناسبة لاحتياجاتك الصحية.`}
+                keywords={`ترتيب مياه, ${componentLabel}, تحليل مياه, ALMAA`}
+            />
+            <div className="bg-blue-600 dark:bg-blue-950 py-12 px-4 shadow-lg mb-8">
                 <div className="container mx-auto px-4">
                     <button
                         onClick={() => navigate(-1)}

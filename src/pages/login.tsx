@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTheme } from "@/components/ui/theme-provider";
+import { SEO } from "@/components/layout/seo";
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -13,16 +15,15 @@ import Logo from "@/components/layout/logo";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
-
-  // Normal form state (if we decide to implement email/password later or just keep it minimal)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
-  // Alternative: Use the component which returns the ID Token directly (credential)
-  // This is often easier for ID token verification on backend.
-  // We need to import { GoogleLogin } from '@react-oauth/google';
+  // Resolve system theme if needed
+  const resolvedTheme = theme === "system"
+    ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+    : theme;
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +62,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
+      <SEO
+        title="تسجيل الدخول | ALMAA"
+        description="قم بتسجيل الدخول إلى حسابك في ALMAA للوصول إلى مقارنات كاملة وميزات حصرية."
+        keywords="تسجيل دخول, ALMAA, حساب مستخدم"
+      />
       <Card className="w-full max-w-md border-none shadow-2xl dark:bg-slate-900">
         <CardHeader className="space-y-1 flex flex-col items-center">
           <div className="mb-4">
@@ -112,8 +118,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Google Login Component */}
-          <div className="flex justify-center w-full">
+          <div className="flex justify-center w-full" key={resolvedTheme}>
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
                 if (credentialResponse.credential) {
@@ -158,8 +163,9 @@ export default function Login() {
               }}
               useOneTap
               shape="pill"
-              width="100%"
-              text="continue_with"
+              width="280"
+              theme={resolvedTheme === "dark" ? "filled_black" : "outline"}
+              text="signin_with"
             />
           </div>
         </CardContent>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/layout/seo";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { profileService } from "@/services/profileService";
@@ -131,6 +132,11 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
+      <SEO
+        title="الملف الشخصي | ALMAA"
+        description="إدارة حسابك الشخصي في ALMAA وتحديث بياناتك وتغيير كلمة المرور."
+        keywords="ملف شخصي, ALMAA, حسابي, إدارة الحساب"
+      />
       <div className="w-full max-w-2xl space-y-6">
         {/* Logo */}
         <div className="flex justify-center mb-8">

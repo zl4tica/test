@@ -8,6 +8,7 @@ import Pagination from "@/components/pagination";
 import { STORAGE_URL } from "@/lib/apiConfig";
 import AdsCard from "@/components/ads_card";
 import { adsService } from "@/services/adsService";
+import { SEO } from "@/components/layout/seo";
 
 export default function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -45,6 +46,11 @@ export default function Blog() {
 
   return (
     <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-20" dir="rtl">
+      <SEO
+        title="المدونة | ALMAA"
+        description="اقرأ أحدث المقالات والنصائح حول مياه الشرب، الصحة، والبيئة في مدونة ALMAA."
+        keywords="مدونة ALMAA, مقالات مياه, نصائح صحية, أخبار المياه"
+      />
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTheme } from "@/components/ui/theme-provider";
+import { SEO } from "@/components/layout/seo";
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -13,7 +15,13 @@ import Logo from "@/components/layout/logo";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
+
+  // Resolve system theme if needed
+  const resolvedTheme = theme === "system"
+    ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+    : theme;
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -72,6 +80,11 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
+      <SEO
+        title="إنشاء حساب جديد | ALMAA"
+        description="انضم إلى ALMAA اليوم واستمتع بمقارنات مياه الشرب غير المحدودة والوصول إلى أحدث التحليلات."
+        keywords="إنشاء حساب, تسجيل, ALMAA, مياه شرب"
+      />
       <Card className="w-full max-w-md border-none shadow-2xl dark:bg-slate-900">
         <CardHeader className="space-y-1 flex flex-col items-center">
           <div className="mb-4">
@@ -155,8 +168,7 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Google Login Component */}
-          <div className="flex justify-center w-full">
+          <div className="flex justify-center w-full" key={resolvedTheme}>
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
                 if (credentialResponse.credential) {
@@ -200,7 +212,8 @@ export default function Register() {
               }}
               useOneTap
               shape="pill"
-              width="100%"
+              width="280"
+              theme={resolvedTheme === "dark" ? "filled_black" : "outline"}
               text="signup_with"
             />
           </div>

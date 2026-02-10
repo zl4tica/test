@@ -5,6 +5,7 @@ import { type Post } from "@/lib/api_types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, User, Share2, Facebook, Twitter, Link as LinkIcon, ArrowRight } from "lucide-react";
 import { STORAGE_URL } from "@/lib/apiConfig";
+import { SEO } from "@/components/layout/seo";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -99,6 +100,11 @@ export default function Post() {
 
   return (
     <article className="bg-white dark:bg-slate-950 min-h-screen pb-20" dir="rtl">
+      <SEO
+        title={`${post.title} | مدونة ALMAA`}
+        description={post.content.substring(0, 160)}
+        keywords="مدونة مياه, نصائح صحية, ALMAA, مياه شرب"
+      />
       {/* Hero Image Section */}
       <div className="container mx-auto px-4 pt-8 max-w-5xl">
         <div className="relative h-[300px] md:h-[500px] rounded-[40px] overflow-hidden shadow-2xl bg-gray-100 dark:bg-gray-800">
