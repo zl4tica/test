@@ -12,7 +12,7 @@ import { STORAGE_URL } from "@/lib/apiConfig";
 import LoginPromptModal from "@/components/login_prompt_modal";
 
 export default function Compare() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [brandA, setBrandA] = useState<WaterBrand | null>(null);
   const [brandB, setBrandB] = useState<WaterBrand | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,11 +32,11 @@ export default function Compare() {
       const idA = searchParams.get("brandA");
       const idB = searchParams.get("brandB");
 
-      if (idA) {
+      if (idA && (!brandA || brandA.id !== Number(idA))) {
         const data = await waterService.getBrandById(Number(idA));
         if (data) setBrandA(data);
       }
-      if (idB) {
+      if (idB && (!brandB || brandB.id !== Number(idB))) {
         const data = await waterService.getBrandById(Number(idB));
         if (data) setBrandB(data);
       }
@@ -51,11 +51,17 @@ export default function Compare() {
   };
 
   const handleSelectBrand = (brand: WaterBrand) => {
+    const newParams = new URLSearchParams(searchParams);
+
     if (activeSlot === "A") {
       setBrandA(brand);
+      newParams.set("brandA", brand.id.toString());
     } else {
       setBrandB(brand);
+      newParams.set("brandB", brand.id.toString());
     }
+
+    setSearchParams(newParams, { replace: true });
     setIsModalOpen(false);
     setActiveSlot(null);
     setHasCompared(false); // Reset comparison state when brand changes
@@ -110,12 +116,25 @@ export default function Compare() {
     performComparison();
   }, [brandA, brandB, hasCompared]);
 
+  const getPageTitle = () => {
+    if (brandA && brandB) {
+      return `مقارنة بين ${brandA.brand_name} و ${brandB.brand_name} | ALMAA`;
+    }
+    return "مقارنة المياه | ALMAA";
+  };
+
+  const getPageDescription = () => {
+    if (brandA && brandB) {
+      return `مقارنة شاملة بين مياه ${brandA.brand_name} ومياه ${brandB.brand_name}. قارن المكونات، التحليل الكيميائي، والتقييمات.`;
+    }
+    return "قارن بين أنواع مختلفة من مياه الشرب بناءً على المكونات الكيميائية والتقييمات. اتخذ قراراً مستنيراً لصحتك.";
+  };
 
   return (
     <div className="min-h-screen pb-20">
       <SEO
-        title="مقارنة المياه | ALMAA"
-        description="قارن بين أنواع مختلفة من مياه الشرب بناءً على المكونات الكيميائية والتقييمات. اتخذ قراراً مستنيراً لصحتك."
+        title={getPageTitle()}
+        description={getPageDescription()}
         keywords="مقارنة مياه, تحليل مياه, ALMAA, جودة المياه"
       />
       {/* Top Ad */}

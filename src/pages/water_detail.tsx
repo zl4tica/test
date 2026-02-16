@@ -114,7 +114,7 @@ export default function WaterDetail() {
         { key: "nitrates", label: "النترات", value: brand.chemistry?.nitrates, default: 15 },
         { key: "nitrites", label: "النيترييت", value: brand.chemistry?.nitrites, default: 0 },
         { key: "residues", label: "البقايا عند 180°", value: brand.chemistry?.residues, default: 478 },
-        { key: "ph", label: "PH 0", value: brand.chemistry?.ph, default: 7.5 },
+        { key: "ph", label: "PH", value: brand.chemistry?.ph, default: 7.5 },
         { key: "calcium", label: "الكالسيوم", value: brand.chemistry?.calcium, default: 68 },
         { key: "magnesium", label: "المغنيسيوم", value: brand.chemistry?.magnesium, default: 50 },
         { key: "potassium", label: "البوتاسيوم", value: brand.chemistry?.potassium, default: 2 },

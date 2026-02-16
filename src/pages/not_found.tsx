@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { SEO } from "@/components/layout/seo";
 export default function NotFound() {
   return (

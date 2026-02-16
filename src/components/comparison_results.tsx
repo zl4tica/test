@@ -20,7 +20,7 @@ export default function ComparisonResults({ brandA, brandB, onRequireLogin }: Co
     const formatValue = (val: number | undefined) => val ? val.toFixed(1) : "-";
 
     const properties = [
-        { key: "ph", label: "PH 0", unit: "" },
+        { key: "ph", label: "PH", unit: "" },
         { key: "calcium", label: "الكالسيوم", unit: "مجم/لتر" },
         { key: "magnesium", label: "المغنيسيوم", unit: "مجم/لتر" },
         { key: "potassium", label: "البوتاسيوم", unit: "مجم/لتر" },

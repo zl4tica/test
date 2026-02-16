@@ -7,7 +7,7 @@ import { STORAGE_URL } from "@/lib/apiConfig";
 import { ArrowLeft, ArrowUp, ArrowDown, Search, Droplets } from "lucide-react";
 
 const properties: Record<string, string> = {
-    ph: "PH 0",
+    ph: "PH",
     calcium: "الكالسيوم",
     magnesium: "المغنيسيوم",
     potassium: "البوتاسيوم",
