@@ -1,4 +1,3 @@
-import { Droplet } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -13,10 +12,14 @@ export default function Logo({ variant = "blue", className }: LogoProps) {
   return (
     <NavLink to="/" className={cn("flex items-center gap-2", className)}>
       <div className="flex h-10 w-10 items-center justify-center">
-        <Droplet className={cn(
-          "h-6 w-6 transition-colors duration-300",
-          isWhite ? "fill-white text-white" : "fill-blue-400 text-blue-400"
-        )} />
+        <img
+          src="/logo.png"
+          alt="ALMAA Logo"
+          className={cn(
+            "h-8 w-8 object-contain transition-opacity duration-300",
+            isWhite ? "brightness-0 invert" : ""
+          )}
+        />
       </div>
       <span className={cn(
         "text-xs font-bold uppercase tracking-wider transition-colors duration-300",
