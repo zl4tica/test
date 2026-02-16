@@ -1,0 +1,23 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: build
+    image: node:24
+    commands:
+      - npm install
+      - npm run build
+
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: http://57.131.32.33:8182/
+      username: ubuntu
+      key:
+        from_secret: SSH_KEY
+      script:
+        - cd /home/ubuntu/elma_frontend
+        - git pull
+        - npm install
+        - pm2 restart all
