@@ -6,6 +6,7 @@ steps:
   - name: install-and-build
     image: node:24
     commands:
+      - npm ci
       - npm run build
 
   - name: deploy
