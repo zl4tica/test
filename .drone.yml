@@ -6,7 +6,7 @@ steps:
   - name: test
     image: node:24
     commands:
-      - npm install
+      - npm install --legacy-peer-deps
       - npm run test || echo "No tests found"
 
   - name: build-docker
