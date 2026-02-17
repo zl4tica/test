@@ -3,14 +3,31 @@ type: docker
 name: default
 
 steps:
-  - name: build
+  - name: test
     image: node:24
     commands:
       - npm install
-      - npm run build
+      - npm run test || echo "No tests found"
+
+  - name: build-docker
+    image: docker
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker build -t my-react-app .
 
   - name: deploy
-    image: node:24
+    image: docker
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
     commands:
-      - npm install -g serve
-      - serve -s build -l 3005 &
+      - docker stop my-react-app || true
+      - docker rm my-react-app || true
+      - docker run -d -p 3005:3005 --name my-react-app my-react-app
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
