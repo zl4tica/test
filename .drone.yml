@@ -3,35 +3,14 @@ type: docker
 name: default
 
 steps:
-  - name: install-and-build
+  - name: build
     image: node:24
     commands:
-      - npm ci
+      - npm install
       - npm run build
 
   - name: deploy
-    image: appleboy/drone-ssh
-    settings:
-      host: 57.131.32.33
-      username: ubuntu
-      key:
-        from_secret: SSH_KEY
-      script:
-        - rm -rf /var/www/react-app/*
-        - mkdir -p /var/www/react-app
-    when:
-      branch:
-        - main
-
-  - name: upload-build
-    image: appleboy/drone-scp
-    settings:
-      host: 57.131.32.33
-      username: ubuntu
-      key:
-        from_secret: SSH_KEY
-      source: dist/*
-      target: /var/www/react-app
-    when:
-      branch:
-        - main
+    image: node:24
+    commands:
+      - npm install -g serve
+      - serve -s build -l 3005 &
