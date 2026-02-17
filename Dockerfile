@@ -10,6 +10,8 @@ RUN npm run build
 FROM node:24-alpine
 RUN npm install -g serve
 WORKDIR /app
-COPY --from=builder /app/build ./build
+# CHANGE THIS LINE FROM /app/build TO /app/dist
+COPY --from=builder /app/dist ./dist
 EXPOSE 3005
-CMD ["serve", "-s", "build", "-l", "3005"]
+# UPDATE THE SERVE COMMAND TO POINT TO THE DIST FOLDER
+CMD ["serve", "-s", "dist", "-l", "3005"]
