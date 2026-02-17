@@ -3,21 +3,35 @@ type: docker
 name: default
 
 steps:
-  - name: build
+  - name: install-and-build
     image: node:24
     commands:
-      - npm install
+      - npm ci
       - npm run build
 
   - name: deploy
     image: appleboy/drone-ssh
     settings:
-      host: http://57.131.32.33:8182/
+      host: 57.131.32.33
       username: ubuntu
       key:
         from_secret: SSH_KEY
       script:
-        - cd /home/ubuntu/elma_frontend
-        - git pull
-        - npm install
-        - pm2 restart all
+        - rm -rf /var/www/react-app/*
+        - mkdir -p /var/www/react-app
+    when:
+      branch:
+        - main
+
+  - name: upload-build
+    image: appleboy/drone-scp
+    settings:
+      host: 57.131.32.33
+      username: ubuntu
+      key:
+        from_secret: SSH_KEY
+      source: dist/*
+      target: /var/www/react-app
+    when:
+      branch:
+        - main
