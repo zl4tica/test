@@ -14,8 +14,21 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
+    environment:
+      # These map the Drone Secrets to environment variables available in this step
+      VITE_API_URL:
+        from_secret: VITE_API_URL
+      VITE_GOOGLE_CLIENT_ID:
+        from_secret: VITE_GOOGLE_CLIENT_ID
+      VITE_STORAGE_URL:
+        from_secret: VITE_STORAGE_URL
     commands:
-      - docker build -t my-react-app .
+      - >
+        docker build 
+        --build-arg VITE_API_URL=$${VITE_API_URL} 
+        --build-arg VITE_GOOGLE_CLIENT_ID=$${VITE_GOOGLE_CLIENT_ID} 
+        --build-arg VITE_STORAGE_URL=$${VITE_STORAGE_URL} 
+        -t my-react-app .
 
   - name: deploy
     image: docker
@@ -26,6 +39,7 @@ steps:
       - docker stop my-react-app || true
       - docker rm my-react-app || true
       - docker run -d -p 3005:3005 --name my-react-app my-react-app
+      - docker image prune -f
 
 volumes:
   - name: dockersock
