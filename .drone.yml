@@ -21,8 +21,10 @@ steps:
       VITE_GOOGLE_CLIENT_ID: { from_secret: VITE_GOOGLE_CLIENT_ID }
       VITE_STORAGE_URL: { from_secret: VITE_STORAGE_URL }
     commands:
+      # Added --no-cache to bypass the corrupted builder state on your VPS
       - >
         docker build 
+        --no-cache
         --build-arg VITE_API_URL=$${VITE_API_URL} 
         --build-arg VITE_GOOGLE_CLIENT_ID=$${VITE_GOOGLE_CLIENT_ID} 
         --build-arg VITE_STORAGE_URL=$${VITE_STORAGE_URL} 
@@ -43,7 +45,6 @@ steps:
     when:
       event: [push]
 
-  # --- TEARDOWN STEP ---
   - name: teardown
     image: docker
     volumes:
