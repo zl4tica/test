@@ -49,7 +49,7 @@ export default function Blog() {
       <SEO
         title="المدونة | ALMAA"
         description="اقرأ أحدث المقالات والنصائح حول مياه الشرب، الصحة، والبيئة في مدونة ALMAA."
-        keywords="مدونة ALMAA, مقالات مياه, نصائح صحية, أخبار المياه"
+        keywords="مدونة ALMAs, مقالات مياه, نصائح صحية, أخبار المياه"
       />
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
