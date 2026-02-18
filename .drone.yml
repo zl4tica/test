@@ -8,6 +8,8 @@ steps:
     commands:
       - npm install --legacy-peer-deps
       - npm run test || echo "No tests found"
+    when:
+      event: [push, pull_request]
 
   - name: build-docker
     image: docker
@@ -15,13 +17,9 @@ steps:
       - name: dockersock
         path: /var/run/docker.sock
     environment:
-      # These map the Drone Secrets to environment variables available in this step
-      VITE_API_URL:
-        from_secret: VITE_API_URL
-      VITE_GOOGLE_CLIENT_ID:
-        from_secret: VITE_GOOGLE_CLIENT_ID
-      VITE_STORAGE_URL:
-        from_secret: VITE_STORAGE_URL
+      VITE_API_URL: { from_secret: VITE_API_URL }
+      VITE_GOOGLE_CLIENT_ID: { from_secret: VITE_GOOGLE_CLIENT_ID }
+      VITE_STORAGE_URL: { from_secret: VITE_STORAGE_URL }
     commands:
       - >
         docker build 
@@ -29,6 +27,8 @@ steps:
         --build-arg VITE_GOOGLE_CLIENT_ID=$${VITE_GOOGLE_CLIENT_ID} 
         --build-arg VITE_STORAGE_URL=$${VITE_STORAGE_URL} 
         -t my-react-app .
+    when:
+      event: [push]
 
   - name: deploy
     image: docker
@@ -40,6 +40,22 @@ steps:
       - docker rm my-react-app || true
       - docker run -d -p 3005:3005 --name my-react-app my-react-app
       - docker image prune -f
+    when:
+      event: [push]
+
+  # --- TEARDOWN STEP ---
+  - name: teardown
+    image: docker
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker stop my-react-app || true
+      - docker rm my-react-app || true
+      - echo "Website has been taken down."
+    when:
+      event: [promote]
+      target: [teardown]
 
 volumes:
   - name: dockersock
